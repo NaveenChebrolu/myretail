@@ -60,5 +60,6 @@ java MyRetailApplication
 
 
 
-
-
+## Smaple Output
+![Alt text](/Picture1.png?raw=true "Swagger Output")
+![Alt text](/Picture2.png?raw=true "Sample Output")
