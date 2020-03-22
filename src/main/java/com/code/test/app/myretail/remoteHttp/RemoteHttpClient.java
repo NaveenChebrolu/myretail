@@ -1,5 +1,7 @@
 package com.code.test.app.myretail.remoteHttp;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,7 +36,8 @@ public class RemoteHttpClient {
 		super();
 	}
 
-	public String getProductNameByRemoteHttpCall(final String productId) throws MyRetailException {
+	@Async
+	public CompletableFuture<String> getProductNameByRemoteHttpCall(final String productId) throws MyRetailException {
 		logger.info("Inside RemoteHttpClient.getProductNameByRemoteHttpCall()");
 		String productName = null;
 		try {
@@ -60,7 +64,7 @@ public class RemoteHttpClient {
 			throw new MyRetailException(HttpStatus.NOT_FOUND.value(), "Proudct Api is Unavailable");
 
 		}
-		return productName;
+		return CompletableFuture.completedFuture(productName);
 	}
 
 }
