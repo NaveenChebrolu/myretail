@@ -2,19 +2,20 @@ package com.code.test.app.myretail.remoteHttp;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.code.test.app.myretail.exception.MyRetailException;
+import com.code.test.app.myretail.remoteHttp.redsky.response.RedSkyProductNameResponse;
 
 @Configuration
 public class RemoteHttpClient {
@@ -43,22 +44,18 @@ public class RemoteHttpClient {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiEndpointUrl + product_URI + productId)
 					.queryParam("excludes", exclusions);
-			String responseString = restTemplate.getForObject(builder.build().encode().toUri(), String.class);
-			if (responseString == null) {
-				logger.debug("Remote Client Json Resonse :" + responseString);
-				JSONObject jsonObject = new JSONObject(responseString);
+			ResponseEntity<RedSkyProductNameResponse> response = restTemplate
+					.getForEntity(builder.build().encode().toUri(), RedSkyProductNameResponse.class);
+			if (response.getStatusCode() == HttpStatus.OK) {
+				logger.debug("Remote Client Json Resonse :"
+						+ response.getBody().getProduct().getItem().getProductDescription().getTitle());
+				productName = response.getBody().getProduct().getItem().getProductDescription().getTitle();
 
-				if (jsonObject.getJSONObject("product").getJSONObject("item")
-						.getJSONObject("Product_description") != null) {
-					JSONObject productDesc = jsonObject.getJSONObject("product").getJSONObject("item")
-							.getJSONObject("Product_description");
-					productName = productDesc.getString("title");
-				} else {
-					throw new MyRetailException(HttpStatus.NO_CONTENT.value(),
-							"For product \"" + productId + "\" title doesn't exsits");
-				}
-
+			} else {
+				throw new MyRetailException(HttpStatus.NO_CONTENT.value(),
+						"For product \"" + productId + "\" title doesn't exsits");
 			}
+
 		} catch (RestClientException e) {
 			logger.debug("Proudct Api unavailable");
 			throw new MyRetailException(HttpStatus.NOT_FOUND.value(), "Proudct Api is Unavailable");
