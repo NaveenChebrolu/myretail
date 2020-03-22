@@ -12,8 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -43,7 +41,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest(value = ProductController.class)
 public class ProductControllerTests {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private MockMvc mockMvc;
