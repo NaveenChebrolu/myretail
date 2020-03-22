@@ -1,6 +1,8 @@
 
 package com.code.test.app.myretail.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.code.test.app.myretail.dto.Product;
@@ -19,6 +21,6 @@ public interface ProductRepository extends MongoRepository<ProductEntity, String
 	 * @return
 	 */
 
-	public ProductEntity findById();
+	public Optional<ProductEntity> findById(String id);
 
 }
